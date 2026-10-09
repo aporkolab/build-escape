@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eae4f5">
+  <meta name="description" content="Rescue a tiny robot from three broken build gates. A playable developer escape room by Ádám Porkoláb.">
+  <title>Build Escape — rescue the tiny robot</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#puzzle-title">Skip to the puzzle</a>
+  <header class="site-header">
+    <a class="wordmark" href="./" aria-label="Build Escape home"><span class="brand-mark" aria-hidden="true">b<span>e</span></span><span>build<span class="wordmark-light">escape</span><small>A VERY SMALL RESCUE MISSION</small></span></a>
+    <nav aria-label="Game utilities"><button id="help-button" class="quiet-button"><span aria-hidden="true">?</span> How to play</button><a href="https://github.com/aporkolab/build-escape" target="_blank" rel="noopener noreferrer" class="github-link">Source <span aria-hidden="true">↗</span></a></nav>
+  </header>
+
+  <main id="game" class="game-shell">
+    <section class="mission-intro" aria-labelledby="puzzle-title">
+      <div class="mission-copy"><div class="eyebrow"><span class="status-dot"></span> <span id="gate-eyebrow">GATE 01 / SOURCE</span><span class="tiny-pill">NO TIMER. NO PANIC.</span></div><h1 id="puzzle-title" tabindex="-1">Two branches. One checkout.</h1><p id="story" class="story"></p><div class="objective"><span aria-hidden="true">◎</span><p><strong>OPEN THIS GATE</strong><span id="objective"></span></p></div></div>
+      <aside class="buddy-card" aria-label="Bot Buddy">
+        <div class="buddy-stage" id="buddy-stage" data-mood="thinking">
+          <svg class="buddy-art" viewBox="0 0 320 260" role="img" aria-labelledby="buddy-art-title">
+            <title id="buddy-art-title">Bot Buddy, a small mint robot, waiting for your patch.</title>
+            <ellipse cx="160" cy="237" rx="76" ry="10" fill="#b6a4d1" opacity=".22"/>
+            <g class="buddy-sparkles" fill="#bda0e0"><path d="M52 75q0 12 12 12-12 0-12 12 0-12-12-12 12 0 12-12Z"/><path d="M270 146q0 8 8 8-8 0-8 8 0-8-8-8 8 0 8-8Z"/></g>
+            <g stroke="#28334b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M160 55V36" fill="none"/><circle class="antenna-light" cx="160" cy="28" r="11" fill="#d1b9ed"/>
+              <g class="buddy-arm left"><path d="M108 165 78 183 66 160" fill="none"/><rect x="51" y="145" width="29" height="27" rx="10" fill="#9de0bd"/></g>
+              <g class="buddy-arm right"><path d="m212 165 28 18 15-25" fill="none"/><rect x="241" y="142" width="29" height="28" rx="10" fill="#9de0bd"/></g>
+              <path d="M131 204v25h-25M187 204v25h25" fill="none"/>
+              <rect x="106" y="129" width="108" height="84" rx="26" fill="#9de0bd"/>
+              <rect x="126" y="160" width="68" height="34" rx="10" fill="#d9f5e6" stroke-width="3"/>
+              <path d="m141 177 7 6 13-14" fill="none" stroke-width="3"/><path d="M172 175h9M172 183h9" fill="none" stroke-width="3"/>
+              <rect x="79" y="59" width="162" height="104" rx="35" fill="#b6ebce"/>
+              <path d="M96 87q5-13 20-13h86" fill="none" stroke="#e9fff2" stroke-width="5"/>
+              <rect x="102" y="87" width="116" height="56" rx="21" fill="#26334b" stroke-width="3"/>
+              <ellipse class="buddy-eye" cx="132" cy="111" rx="8" ry="10" fill="#dbfff0" stroke="none"/><ellipse class="buddy-eye" cx="188" cy="111" rx="8" ry="10" fill="#dbfff0" stroke="none"/>
+              <path id="buddy-mouth" d="M148 130q12 8 24 0" fill="none" stroke="#b6ebce" stroke-width="3"/>
+              <circle cx="114" cy="128" r="4" fill="#d9a3bc" stroke="none"/><circle cx="206" cy="128" r="4" fill="#d9a3bc" stroke="none"/>
+            </g>
+          </svg>
+          <span class="buddy-name">BOT BUDDY <i aria-hidden="true">●</i></span>
+        </div>
+        <div class="buddy-bubble"><span id="buddy-speech">Both branches meant well. That is how it starts.</span><button id="hint-button" aria-expanded="false" aria-controls="hint-copy">A tiny hint <span aria-hidden="true">↗</span></button><p id="hint-copy" hidden></p></div>
+      </aside>
+    </section>
+
+    <ol id="gate-track" class="gate-track" aria-label="Escape progress"><li data-gate="0" aria-current="step"><span class="gate-number">01</span><span>SOURCE<small>Keep both promises</small></span><span class="gate-state">YOU ARE HERE</span></li><li data-gate="1"><span class="gate-number">02</span><span>TEST<small>Stop the clock</small></span><span class="gate-state">LOCKED</span></li><li data-gate="2"><span class="gate-number">03</span><span>RELEASE<small>Know when to stop</small></span><span class="gate-state">LOCKED</span></li></ol>
+
+    <section id="workbench" class="workbench" aria-label="Puzzle workbench">
+      <article class="code-panel"><div class="panel-header"><div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div><span id="code-filename">checkout.js</span><span class="code-tag">BROKEN BUILD</span></div><div class="code-intro"><span class="eyebrow">THE THING BLOCKING THE DOOR</span><p id="code-note">One conflict. A surprising number of ways to lose behavior.</p></div><pre id="code-block" tabindex="0" aria-label="Broken code to inspect"><code id="code-lines"></code></pre><div class="code-footer"><span><i aria-hidden="true"></i> LOCAL SIMULATION</span><span>YOUR ACTUAL REPO IS SAFE</span></div></article>
+      <article class="patch-panel" aria-labelledby="patch-title"><div class="patch-heading"><div><span class="eyebrow">YOUR MOVE</span><h2 id="patch-title">Pick a patch.</h2></div><span class="pencil-mark" aria-hidden="true">↙</span></div><div id="patch-options" class="patch-options" role="radiogroup" aria-labelledby="patch-title"></div><button id="primary-action" class="primary-button">Test this patch <span aria-hidden="true">↗</span></button><p class="keyboard-note"><kbd>1</kbd>–<kbd>4</kbd> choose <span>·</span> <kbd>Enter</kbd> test <span>·</span> <kbd>H</kbd> hint</p></article>
+    </section>
+
+    <section id="feedback" class="feedback" hidden aria-labelledby="feedback-title"><div class="feedback-top"><div><span class="eyebrow" id="feedback-eyebrow">TEST REPORT</span><h2 id="feedback-title" tabindex="-1"></h2></div><span id="checks-count" class="checks-count"></span></div><p id="selected-patch" class="selected-patch"></p><ul id="checks" class="checks"></ul><div class="feedback-bottom"><p id="feedback-message"></p><button id="continue-button" class="primary-button">Try another patch <span aria-hidden="true">↗</span></button></div></section>
+
+    <section id="complete" class="complete" hidden aria-labelledby="complete-title"><div class="release-stamp" aria-hidden="true">✓</div><span class="eyebrow">SOURCE → TEST → RELEASE</span><h2 id="complete-title" tabindex="-1">Small robot.<br>Big escape.</h2><p>You kept the guard, cleared the clock, and stopped the loop.<br>Buddy is officially outside the pipeline.</p><div class="completion-facts"><span><strong>3 / 3</strong>GATES OPEN</span><span><strong id="patch-count">3</strong>PATCHES TRIED</span><span><strong>0</strong>REAL BUILDS HARMED</span></div><button id="replay-button" class="primary-button">One more tiny release <span aria-hidden="true">↻</span></button><button id="terminal-button" class="text-button">Take Buddy into your terminal ↗</button></section>
+    <footer class="game-footer"><span>Made by <a href="https://github.com/aporkolab" target="_blank" rel="noopener noreferrer">Ádám Porkoláb ↗</a></span><span>THREE REAL PUZZLE MODELS. ONE FICTIONAL ROBOT.</span><button id="terminal-footer" class="text-button">Terminal edition ↗</button></footer>
+  </main>
+
+  <dialog id="help-dialog" aria-labelledby="help-title"><button class="dialog-close" data-close="help-dialog" aria-label="Close instructions">×</button><span class="eyebrow">FIELD GUIDE, TINY EDITION</span><h2 id="help-title">Get the robot out.</h2><p>Read the broken code and the gate's objective. Choose one of four patches, then run the checks. They execute the same puzzle models as the terminal game.</p><ol><li><strong>Source:</strong> preserve both sides of a merge.</li><li><strong>Test:</strong> stop a recurring fake timer.</li><li><strong>Release:</strong> make retries finite and selective.</li></ol><p>A wrong patch gives you evidence. Read what failed and try again. There is no timer, score penalty, or permanent loss.</p><p class="dialog-keys"><kbd>1–4</kbd> select · <kbd>↑↓</kbd> move between patches<br><kbd>Enter</kbd> test / continue · <kbd>H</kbd> hint</p><button class="primary-button" data-close="help-dialog">Okay. Tiny rescue time. <span aria-hidden="true">↗</span></button></dialog>
+  <dialog id="terminal-dialog" aria-labelledby="terminal-title"><button class="dialog-close" data-close="terminal-dialog" aria-label="Close terminal instructions">×</button><span class="eyebrow">SAME BUDDY. DIFFERENT ROOM.</span><h2 id="terminal-title">A little escape<br>in your terminal.</h2><p>With Node.js 20+, npm and Git installed, run:</p><label class="sr-only" for="terminal-command">Command to launch Build Escape</label><textarea id="terminal-command" readonly rows="3" spellcheck="false">npx --yes --package=github:aporkolab/build-escape#v1.0.0 build-escape</textarea><button id="copy-command" class="primary-button">Copy command <span aria-hidden="true">↗</span></button><p id="copy-feedback" class="copy-feedback" role="status"></p><p class="small-print">The command downloads the tagged GitHub package into npm's cache. The game itself works offline and saves no files.</p></dialog>
+  <p id="announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+  <noscript><p class="noscript">Buddy needs JavaScript for the puzzles. Enable it, or play the terminal version from the source repository.</p></noscript>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

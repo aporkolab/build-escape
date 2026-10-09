@@ -22,5 +22,6 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm test
+      - run: npm run build:demo
       - run: node bin/build-escape.mjs --demo
       - run: npm pack --dry-run --ignore-scripts

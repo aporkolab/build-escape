@@ -3,14 +3,40 @@
   "version": "1.0.0",
   "description": "A tiny terminal escape room: three broken build gates and one helpful mint robot.",
   "type": "module",
-  "bin": { "build-escape": "bin/build-escape.mjs" },
-  "files": ["bin/", "src/", "README.md", "LICENSE"],
-  "scripts": { "start": "node bin/build-escape.mjs", "test": "node --test", "demo": "node bin/build-escape.mjs --demo" },
-  "engines": { "node": ">=20" },
+  "bin": {
+    "build-escape": "bin/build-escape.mjs"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node bin/build-escape.mjs",
+    "test": "node --test",
+    "demo": "node bin/build-escape.mjs --demo",
+    "build:demo": "node scripts/build-demo.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "license": "MIT",
   "author": "Ádám Porkoláb",
-  "repository": { "type": "git", "url": "git+https://github.com/aporkolab/build-escape.git" },
-  "bugs": { "url": "https://github.com/aporkolab/build-escape/issues" },
-  "homepage": "https://github.com/aporkolab/build-escape#readme",
-  "keywords": ["terminal", "game", "escape-room", "developer", "puzzle", "cli"]
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aporkolab/build-escape.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aporkolab/build-escape/issues"
+  },
+  "homepage": "https://aporkolab.github.io/build-escape/",
+  "keywords": [
+    "terminal",
+    "game",
+    "escape-room",
+    "developer",
+    "puzzle",
+    "cli"
+  ]
 }

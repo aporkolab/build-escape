@@ -4,9 +4,15 @@
 
 Bot Buddy is trapped inside your release pipeline. Help the mint-colored robot reconcile a merge conflict, stop a runaway test, and teach a retry loop when to give up. Every patch runs against a small executable model. Failed checks show what happened, and you can always try again.
 
-A dependency-free terminal game by [Ádám Porkoláb](https://github.com/aporkolab).
+A dependency-free browser and terminal game by [Ádám Porkoláb](https://github.com/aporkolab).
 
-## Play
+## Play in your browser
+
+**[Rescue Bot Buddy →](https://aporkolab.github.io/build-escape/)**
+
+Three playable gates, visible test results, hints and replay. Click a patch or use the keyboard. The browser demo uses the exact same pure puzzle engine as the terminal version. No installation, sign-in or AI service is required.
+
+## Play in your terminal
 
 Requires **Node.js 20 or newer**, npm, and Git for the GitHub shortcut:
 
@@ -70,10 +76,13 @@ npm or Git may access the network and their own cache to download the package be
 npm ci --ignore-scripts
 npm test
 npm run demo
+npm run build:demo
 npm pack --dry-run --ignore-scripts
 ```
 
 The engine consists of pure deterministic models and immutable game-state transitions. Tests cover puzzle invariants, recovery from every wrong patch, terminal cleanup after normal exit, interruption, EOF and stream errors, accessible input, and the non-TTY CLI. CI runs the suite on Node 20, 22 and 24.
+
+For the browser demo, `npm run build:demo` copies `src/engine.mjs` into `docs/engine.mjs`. Serve `docs/` with any local static server. The generated engine copy is ignored by Git. Successful main-branch CI publishes the static demo through GitHub Pages; visiting or playing the game never starts Actions or an AI model. Browser assets are served from the same site, with no analytics or external runtime services.
 
 Publishing a GitHub release with a matching `v1.0.0` tag triggers the release workflow: run the tests, package only the runtime and documentation, calculate SHA-256 checksums, upload a workflow artifact, and attach the tarball and `SHA256SUMS` to that release. Re-running the workflow replaces those two assets. It does not publish to npm.
 

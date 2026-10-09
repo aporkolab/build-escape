@@ -3,3 +3,6 @@ node_modules/
 release/
 coverage/
 .DS_Store
+
+# Browser copy of the shared engine, produced by build:demo
+docs/engine.mjs
