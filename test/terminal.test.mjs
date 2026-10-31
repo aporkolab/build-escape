@@ -72,3 +72,44 @@ test('compact normal screens fit 80 columns and plain rendering contains no ANSI
     state = advance(submitChoice(state, answer));
   }
 });
+
+test('interruptions report the signal; a plain quit reports none', async () => {
+  for (const [stop, signal] of [[t => key(t, 'q'), null], [t => key(t, 'escape'), null], [t => key(t, 'c', { ctrl: true }), 'SIGINT'], [t => t.signals.emit('SIGINT'), 'SIGINT'], [t => t.signals.emit('SIGTERM'), 'SIGTERM']]) {
+    const t = terminal(); stop(t);
+    const outcome = await t.done;
+    assert.equal(outcome.signal, signal); assert.equal(outcome.interrupted, signal !== null);
+  }
+});
+
+test('hint toggles, out-of-range digits are ignored and replay restarts from gate one', async () => {
+  const t = terminal();
+  key(t, 'h'); assert.match(t.output.text, /Buddy: Try zero items/);
+  key(t, '9'); key(t, '3'); key(t, 'return');
+  assert.match(t.output.text, /PATCH VERIFIED/);
+  key(t, 'return'); key(t, '2'); key(t, 'return'); key(t, 'return'); key(t, '4'); key(t, 'return'); key(t, 'return');
+  assert.match(t.output.text, /ALL THREE GATES OPEN/);
+  t.output.text = ''; key(t, 'r');
+  assert.match(t.output.text, /Two branches\. One checkout\./);
+  key(t, 'q');
+  const outcome = await t.done;
+  assert.equal(outcome.state.levelIndex, 0); assert.deepEqual(outcome.state.attempts, []);
+});
+
+test('a terminal shrunk below 80 x 24 asks to be widened instead of drawing a broken layout', async () => {
+  const t = terminal();
+  t.output.columns = 60; t.signals.emit('SIGWINCH');
+  assert.match(t.output.text, /Please widen the terminal to 80 x 24/);
+  key(t, 'q'); await t.done; assertRestored(t);
+});
+
+test('output errors restore terminal before rejecting', async () => {
+  const t = terminal();
+  const rejected = assert.rejects(t.done, /output gone/);
+  t.output.emit('error', new Error('output gone'));
+  await rejected; assertRestored(t);
+});
+
+test('streams without raw mode reject with a pointer to --plain', async () => {
+  const input = new EventEmitter(); input.pause = () => {};
+  await assert.rejects(runTerminalGame({ input, output: new Output(), signals: new EventEmitter() }), /--plain/);
+});
