@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 const bin = fileURLToPath(new URL('../bin/build-escape.mjs', import.meta.url));
+const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const run = (args, input) => spawnSync(process.execPath, [bin, ...args], { encoding: 'utf8', input, timeout: 5000, env: { ...process.env, NO_COLOR: '1' } });
 
 test('help, version and non-TTY default never wait for input', () => {
@@ -10,7 +12,9 @@ test('help, version and non-TTY default never wait for input', () => {
     const result = run(args); assert.equal(result.status, 0, result.stderr); assert.doesNotMatch(result.stdout, /\x1b/);
   }
   assert.match(run(['--help']).stdout, /no network, subprocesses/);
-  assert.equal(run(['--version']).stdout, '1.0.0\n');
+  assert.equal(run(['--version']).stdout, `${version}\n`);
+  assert.equal(run(['-v']).stdout, `${version}\n`);
+  assert.match(run(['-h']).stdout, new RegExp(`^BUILD ESCAPE ${version.replaceAll('.', '\\.')}\n`));
   assert.equal(run(['--unknown']).status, 2);
 });
 

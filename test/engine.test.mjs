@@ -70,3 +70,29 @@ test('repeated inputs are deterministic and invalid patches cannot execute arbit
   assert.throws(() => simulateRetry('bounded', []), TypeError);
   assert.throws(() => simulateRetry('bounded', [NaN]), TypeError);
 });
+
+test('reducers ignore actions from the wrong phase and models reject unknown policies', () => {
+  const start = createGame();
+  assert.equal(advance(start), start);
+  const feedback = submitChoice(start, 'ours');
+  assert.equal(submitChoice(feedback, 'compose'), feedback);
+  assert.throws(() => evaluateChoice('missing', 'ours'), RangeError);
+  assert.throws(() => evaluateChoice('timer', 'compose'), RangeError);
+  assert.throws(() => quoteTotal('both', 1, 1, 0), RangeError);
+  assert.throws(() => simulateTimer('forever'), RangeError);
+  assert.throws(() => simulateRetry('always', [200]), RangeError);
+  assert.throws(() => simulateRetry('bounded', [600]), TypeError);
+  assert.throws(() => simulateRetry('bounded', '503'), TypeError);
+});
+
+test('retry trace repeats the last fixture and only the recursive policy runs past three calls', () => {
+  assert.deepEqual(simulateRetry('bounded', [503]), { attempts: [503, 503, 503], waits: [200, 400], success: false, stopped: true });
+  assert.deepEqual(simulateRetry('flat-delay', [503, 503, 200]).waits, [200, 200]);
+  assert.deepEqual(simulateRetry('all-errors', [400, 200]), { attempts: [400, 200], waits: [200], success: true, stopped: true });
+  assert.equal(simulateRetry('recursive', [503]).attempts.length, 8);
+});
+
+test('the puzzle data is frozen so a client cannot rewrite a gate', () => {
+  assert.ok(Object.isFrozen(LEVELS));
+  assert.throws(() => { LEVELS.push({}); }, TypeError);
+});
