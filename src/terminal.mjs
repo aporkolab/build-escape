@@ -21,7 +21,7 @@ export function runTerminalGame({ input = process.stdin, output = process.stdout
     if (opened) { try { output.write('\x1b[0m\x1b[?25h\x1b[?1049l'); } catch { /* A disconnected output cannot be restored. */ } }
   };
   return new Promise((resolve, reject) => {
-    const finish = (quit = true, interrupted = false) => { cleanup(); resolve({ state, quit, interrupted }); };
+    const finish = (quit = true, signal = null) => { cleanup(); resolve({ state, quit, interrupted: signal !== null, signal }); };
     const fail = error => { cleanup(); reject(error); };
     const draw = () => {
       try {
@@ -34,7 +34,7 @@ export function runTerminalGame({ input = process.stdin, output = process.stdout
     };
     const keypress = (_text, key = {}) => {
       try {
-        if (key.name === 'q' || key.name === 'escape' || (key.ctrl && key.name === 'c')) { finish(true, Boolean(key.ctrl && key.name === 'c')); return; }
+        if (key.name === 'q' || key.name === 'escape' || (key.ctrl && key.name === 'c')) { finish(true, key.ctrl && key.name === 'c' ? 'SIGINT' : null); return; }
         if (state.phase === 'complete') {
           if (key.name === 'return' || key.name === 'enter') finish(false);
           else if (key.name === 'r') { state = createGame(); selected = 0; hint = false; draw(); }
@@ -44,11 +44,12 @@ export function runTerminalGame({ input = process.stdin, output = process.stdout
           if (key.name === 'return' || key.name === 'enter') { state = advance(state); selected = 0; hint = false; draw(); }
           return;
         }
-        if (key.name === 'up' || key.name === 'left') selected = (selected + 3) % 4;
-        else if (key.name === 'down' || key.name === 'right') selected = (selected + 1) % 4;
-        else if (/^[1-4]$/.test(key.name ?? '')) selected = Number(key.name) - 1;
+        const { choices } = LEVELS[state.levelIndex];
+        if (key.name === 'up' || key.name === 'left') selected = (selected + choices.length - 1) % choices.length;
+        else if (key.name === 'down' || key.name === 'right') selected = (selected + 1) % choices.length;
+        else if (/^[1-9]$/.test(key.name ?? '') && Number(key.name) <= choices.length) selected = Number(key.name) - 1;
         else if (key.name === 'h') hint = !hint;
-        else if (key.name === 'return' || key.name === 'enter') state = submitChoice(state, LEVELS[state.levelIndex].choices[selected].id);
+        else if (key.name === 'return' || key.name === 'enter') state = submitChoice(state, choices[selected].id);
         else return;
         draw();
       } catch (error) { fail(error); }
@@ -61,8 +62,8 @@ export function runTerminalGame({ input = process.stdin, output = process.stdout
       listen(input, 'close', () => finish());
       listen(input, 'error', fail);
       listen(output, 'error', fail);
-      listen(signals, 'SIGINT', () => finish(true, true));
-      listen(signals, 'SIGTERM', () => finish(true, true));
+      listen(signals, 'SIGINT', () => finish(true, 'SIGINT'));
+      listen(signals, 'SIGTERM', () => finish(true, 'SIGTERM'));
       listen(signals, 'SIGWINCH', draw);
       listen(signals, 'exit', cleanup);
       input.setRawMode(true);

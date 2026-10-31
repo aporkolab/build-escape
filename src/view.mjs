@@ -4,12 +4,12 @@ const RGB = { text: '235;239;249', mint: '157;232;194', lilac: '206;186;246', di
 const ANSI = /\u001b\[[0-9;?]*[A-Za-z]/g;
 const visibleLength = text => text.replace(ANSI, '').length;
 const format = value => value === null ? 'rejected' : JSON.stringify(value);
-export const summary = state => `BUILD ESCAPE: ${state.solved.length}/3 gates open; ${state.attempts.length} patch${state.attempts.length === 1 ? '' : 'es'} tried.`;
+export const summary = state => `BUILD ESCAPE: ${state.solved.length}/${LEVELS.length} gates open; ${state.attempts.length} patch${state.attempts.length === 1 ? '' : 'es'} tried.`;
 
 export function plainPuzzle(state, hint = false) {
   if (state.phase === 'complete') return `${summary(state)}\nRelease shipped. Bot Buddy has escaped the pipeline.\nNo files, services or real builds were changed.\n`;
   const level = LEVELS[state.levelIndex];
-  const lines = [`GATE ${state.levelIndex + 1}/3: ${level.gate} | ${level.title}`, '', level.story, level.objective, '', ...level.code.map(line => `  ${line}`), ''];
+  const lines = [`GATE ${state.levelIndex + 1}/${LEVELS.length}: ${level.gate} | ${level.title}`, '', level.story, level.objective, '', ...level.code.map(line => `  ${line}`), ''];
   if (hint) lines.push(`Buddy's hint: ${level.hint}`, '');
   level.choices.forEach((choice, index) => lines.push(`${index + 1}. ${choice.label}`));
   return `${lines.join('\n')}\n`;

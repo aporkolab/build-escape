@@ -62,7 +62,7 @@ build-escape --version
 
 When running directly from the checkout, substitute `node bin/build-escape.mjs` for `build-escape`. To pass an option through the GitHub launch command, append it after `build-escape`.
 
-`NO_COLOR` disables colors. `TERM=dumb` and `--plain` disable cursor positioning and raw input as well. Plain mode accepts piped answers, so it works without a TTY. The default non-TTY invocation prints help instead of waiting indefinitely.
+A non-empty `NO_COLOR` disables colors. `TERM=dumb` and `--plain` disable cursor positioning and raw input as well. Plain mode accepts piped answers, so it works without a TTY. The default non-TTY invocation prints help instead of waiting indefinitely.
 
 ## What runs
 
@@ -74,17 +74,18 @@ npm or Git may access the network and their own cache to download the package be
 
 ```sh
 npm ci --ignore-scripts
+npm run lint
 npm test
 npm run demo
 npm run build:demo
 npm pack --dry-run --ignore-scripts
 ```
 
-The engine consists of pure deterministic models and immutable game-state transitions. Tests cover puzzle invariants, recovery from every wrong patch, terminal cleanup after normal exit, interruption, EOF and stream errors, accessible input, and the non-TTY CLI. CI runs the suite on Node 20, 22 and 24.
+The engine consists of pure deterministic models and immutable game-state transitions. Tests cover puzzle invariants, recovery from every wrong patch, terminal cleanup after normal exit, interruption, EOF and stream errors, accessible input, and the non-TTY CLI. `npm run lint` is a dependency-free syntax gate: it parses every module, including the browser-only `docs/app.mjs`, with `node --check`. CI runs lint, tests, the demo build, the guided demo and a dry-run pack on Node 20, 22, 24 and 26. All workflow actions are pinned to release commit SHAs.
 
 For the browser demo, `npm run build:demo` copies `src/engine.mjs` into `docs/engine.mjs`. Serve `docs/` with any local static server. The generated engine copy is ignored by Git. Successful main-branch CI publishes the static demo through GitHub Pages; visiting or playing the game never starts Actions or an AI model. Browser assets are served from the same site, with no analytics or external runtime services.
 
-Publishing a GitHub release with a matching `v1.0.0` tag triggers the release workflow: run the tests, package only the runtime and documentation, calculate SHA-256 checksums, upload a workflow artifact, and attach the tarball and `SHA256SUMS` to that release. Re-running the workflow replaces those two assets. It does not publish to npm.
+Publishing a GitHub release with a tag matching the `package.json` version (currently `v1.0.0`) triggers the release workflow on Node 26: run the tests, package only the runtime and documentation, calculate SHA-256 checksums, upload a workflow artifact, and attach the tarball and `SHA256SUMS` to that release. Re-running the workflow replaces those two assets. It does not publish to npm.
 
 ## License
 

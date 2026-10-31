@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "start": "node bin/build-escape.mjs",
+    "lint": "node scripts/check-syntax.mjs",
     "test": "node --test",
     "demo": "node bin/build-escape.mjs --demo",
     "build:demo": "node scripts/build-demo.mjs"
